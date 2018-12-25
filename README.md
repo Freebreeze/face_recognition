@@ -8,3 +8,4 @@
 4. video_face_rec  视频中人脸的识别
 5. video_lib_sex_rec  调用simple_CNN.81-0.96.hdf5进行对视频的性别识别
 6. video_sex_rec  视频中人物性别识别
+7. project.md  工程代码说明文档
