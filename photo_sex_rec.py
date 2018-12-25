@@ -1,6 +1,9 @@
 # -*- coding:utf-8 -*-
 '''
 内容：训练图片处理和人脸识别的训练部分
+作者：surecheun
+邮箱：surecheun@163.com
+版本：1.0
 '''
 from PIL import Image
 import sys
@@ -12,29 +15,27 @@ import numpy as np
 import PIL.Image
 from pylab import *
 
-'''
-   利用别人写好的人脸分类器来截取图片中的人脸，并保存到spath中
-   i:截取图片保存名
-   path:原图片路径
-   spath：处理过后图片路径
-'''
-
 def get_face_from_photo(i,path,spath):
-
+    '''
+    利用别人写好的人脸分类器来截取图片中的人脸，并保存到spath中
+    分类器下载：https://github.com/opencv/opencv/tree/master/data/haarcascades
+    参考:官方文档
+    '''
     detector = dlib.get_frontal_face_detector() #获取人脸分类
     # 读取path路径下的图片，获得所有的图片名字
     filenames = os.listdir(path)
 
     for f1 in filenames:
         f = os.path.join(path,f1)
-        iimag = PIL.Image.open(f)
+        # iimag = PIL.Image.open(f)
         # opencv 读取图片，并显示
         img = cv2.imread(f, cv2.IMREAD_COLOR)
+        iimag = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
 
         b, g, r = cv2.split(img)    # 分离三个颜色通道
         img2 = cv2.merge([r, g, b])   # 生成新图片
 
-        counts = detector(img, 1) #人脸检测 
+        counts = detector(img, 1) #人脸检测
 
         for index, face in enumerate(counts):
 
@@ -65,13 +66,11 @@ def get_face_from_photo(i,path,spath):
     cv2.destroyAllWindows()
     return i
 
-'''
-    将人脸图片转化为28*28的灰度图片
-    path:人脸图片
-    spath:灰度图片
-'''
-def change_photo_size28(path,spath):
 
+def change_photo_size28(path,spath):
+    '''
+    将人脸图片转化为28*28的灰度图片
+    '''
 
     filenames = os.listdir(path)
 
@@ -82,11 +81,11 @@ def change_photo_size28(path,spath):
         #savepath = spath + '/' + filename
         iimag.save(savepath)
 
-'''
-    读取训练图片
-'''
-def read_photo_for_train(k,photo_path):
 
+def read_photo_for_train(k,photo_path):
+    '''
+    读取训练图片
+    '''
     for i in range(k):
         j = i
         j = str(j)
@@ -119,25 +118,22 @@ def layerout(w,b,x):
     y = 1.0/(1+exp(t))
     return y
 
-'''
+
+def mytrain(x_train,y_train):
+    '''
     训练样本：中国某些明星的google图片(106张，女60张，男46张），侵删。女生标签为0，男生标签为1.
     训练方法：简单的梯度下降法
     参考（本人博客另一篇）：https://blog.csdn.net/yunyunyx/article/details/80539222
-'''
+    '''
 
-'''
+    '''
     设置一个隐藏层，784-->隐藏层神经元个数-->1
-'''
-def mytrain(x_train,y_train):
+    '''
 
-
-    # step=int(input('mytrain迭代步数：'))
-    # a=double(input('学习因子：'))
-    step=300
-    a=0.28
+    step=int(input('mytrain迭代步数：'))
+    a=double(input('学习因子：'))
     inn = 784  #输入神经元个数
-    # hid = int(input('隐藏层神经元个数：'))#隐藏层神经元个数
-    hid=28
+    hid = int(input('隐藏层神经元个数：'))#隐藏层神经元个数
     out = 1  #输出层神经元个数
 
     w = np.random.randn(out,hid)
@@ -149,7 +145,7 @@ def mytrain(x_train,y_train):
 
     for i in range(step):
         #打乱训练样本
-        r=np.random.permutation(104)
+        r=np.random.permutation(106)
         x_train = x_train[:,r]
         y_train = y_train[:,r]
         #mini_batch
@@ -176,11 +172,11 @@ def mytrain(x_train,y_train):
             b_h =b_h +hidb_update
 
     return w,b,w_h,b_h
-'''
-    预测结果pre大于0.5，为男；预测结果小于或等于0.5为女
-'''
-def mytest(x_test,w,b,w_h,b_h):
 
+def mytest(x_test,w,b,w_h,b_h):
+    '''
+    预测结果pre大于0.5，为男；预测结果小于或等于0.5为女
+    '''
     hid = layerout(w_h,b_h,x_test);
     pre = layerout(w,b,hid);
     print(pre)
@@ -199,7 +195,7 @@ i = 0
 path = 'C:\\Users\\zhao1\\Desktop\\show\\test\\beauty'
 spath = 'C:\\Users\\zhao1\\Desktop\\show\\test\\faces'
 i = get_face_from_photo(i,path,spath)
-# 男孩
+#男孩
 path = 'C:\\Users\\zhao1\\Desktop\\show\\test\\nan'
 i = get_face_from_photo(i,path,spath)
 
@@ -210,7 +206,7 @@ change_photo_size28(path,spath)
 
 
 #获取图片信息
-im = read_photo_for_train(104,spath)
+im = read_photo_for_train(106,spath)
 
 #归一化
 immin = im.min()
@@ -219,9 +215,9 @@ im = (im-immin)/(immax-immin)
 
 x_train = im
 
-#制作标签，前54张是女生，为0
-y1 = np.zeros((1,54))
-y2 = np.ones((1,50))
+#制作标签，前60张是女生，为0
+y1 = np.zeros((1,60))
+y2 = np.ones((1,46))
 y_train = np.hstack((y1,y2))
 
 #开始训练
@@ -229,40 +225,8 @@ print("----------------------开始训练---------------------------------------
 w,b,w_h,b_h = mytrain(x_train,y_train)
 print("-----------------------训练结束------------------------------------------")
 
-# 测试
-# print("--------------------视频测试-----------------------------------------")
-#
-# face_detector = dlib.get_frontal_face_detector() #获取人脸分类
-# while(True):
-#     ret, frame=camera.read()
 
-# path = 'C:\\Users\\zhao1\\Desktop\\show\\test\\girltest'
-# spath = 'C:\\Users\\zhao1\\Desktop\\show\\test\\girltest-face'
-# i = get_face_from_photo(i,path,spath)
-#
-# #将人脸图片转化为28*28的灰度图片
-# path = 'C:\\Users\\zhao1\\Desktop\\show\\test\\girltest-face'
-# spath = 'C:\\Users\\zhao1\\Desktop\\show\\test\\girltest-grayface'
-# change_photo_size28(path,spath)
-#
-#
-# #获取图片信息
-# im = read_photo_for_train(6,spath)
-#
-# #归一化
-# immin = im.min()
-# immax = im.max()
-# im = (im-immin)/(immax-immin)
-#
-# x_test = im
-# #print(x_test.shape)
-# for i in range(6):
-#     xx = x_test[:,i]
-#     xx = xx.reshape((784,1))
-#     mytest(xx,w,b,w_h,b_h)
-
-
-# 测试
+#测试
 print("--------------------测试女生-----------------------------------------")
 #框出人脸，并保存到girltests中,i为保存的名字
 i = 0
@@ -291,31 +255,3 @@ for i in range(6):
     xx = x_test[:,i]
     xx = xx.reshape((784,1))
     mytest(xx,w,b,w_h,b_h)
-
-# print("---------------------测试男生-----------------------------")
-# #框出人脸，并保存到boytests中,i为保存的名字
-# i = 0
-# #男孩测试集
-# path = 'C:\\Users\\yxg\\Desktop\\boytest'
-# spath = 'C:\\Users\\yxg\\Desktop\\boytests'
-# i = get_face_from_photo(i,path,spath)
-#
-# #将人脸图片转化为28*28的灰度图片
-# path = 'C:\\Users\\yxg\\Desktop\\boytests'
-# spath = 'C:\\Users\\yxg\\Desktop\\boytests'
-# change_photo_size28(path,spath)
-#
-#
-# #获取图片信息
-# im = read_photo_for_train(6,spath)
-#
-# #归一化
-# immin = im.min()
-# immax = im.max()
-# im = (im-immin)/(immax-immin)
-#
-# x_test = im
-# for i in range(6):
-#     xx = x_test[:,i]
-#     xx = xx.reshape((784,1))
-#     mytest(xx,w,b,w_h,b_h)

@@ -1,8 +1,4 @@
-import os
-import numpy
-from PIL import Image, ImageDraw
 import cv2
-from keras.models import load_model
 
 filename =  'C:/Users/zhao1/Desktop/show/test/example/1.jpg'
 casvade_face_name='C:/Users/zhao1/Desktop/show/test/cascades/haarcascade_frontalface_default.xml'
@@ -30,7 +26,8 @@ def detect(filename) :
         # eyes = eye_cascade.detectMultiScale(roi_gray,1.03,5,0,(20,20))
         # for (ex, ey, ew, eh) in eyes:
         #     cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
-
+        font = cv2.FONT_HERSHEY_SIMPLEX  # 使用默认字体
+        cv2.putText(img, 'man', (x, y - 30), font, 1.2, (255, 255, 255), 2)  # 添加文字，1.2表示字体大小，（0,40）是初始的位置，
     cv2.namedWindow('find')
     cv2.imshow('face',img)
     cv2.imwrite('C:/Users/zhao1/Desktop/show/test/人脸.jpg ',img)
