@@ -70,10 +70,11 @@ def get_face_from_photo(i,path,spath):
             if(picture_show==1):
                 cv2.namedWindow(f, cv2.WINDOW_AUTOSIZE)
                 cv2.imshow(f, img)
-                k = cv2.waitKey(0)
-                cv2.destroyAllWindows()
-    print("read_ok")
 
+    print("read_ok")
+    if(picture_show==1):
+        k = cv2.waitKey(0)
+        cv2.destroyAllWindows()
     return i
 
 '''
