@@ -9,3 +9,4 @@
 5. video_lib_sex_rec  调用simple_CNN.81-0.96.hdf5进行对视频的性别识别
 6. video_sex_rec  视频中人物性别识别
 7. project.md  工程代码说明文档
+8. 运用BP神经网络实现性别检测（工作报告） 工作流程的大体报告
