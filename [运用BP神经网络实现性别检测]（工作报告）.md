@@ -1,5 +1,5 @@
 ﻿---
-# [运用BP神经网络实现性别检测](https://github.com/Freebreeze/face_recognition)（工作报告）
+# [运用BP神经网络实现性别检测](https://www.zybuluo.com/Freebreeze/note/1390565)（工作报告）
 标签: OpenCV BP神经网 人脸识别 性别识别 python
 [![](https://img.shields.io/badge/OpenCV-Freebreeze-brightgreen.svg)](https://github.com/Freebreeze/face_recognition)
 ---
